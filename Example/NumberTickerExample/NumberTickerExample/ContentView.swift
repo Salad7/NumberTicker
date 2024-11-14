@@ -25,6 +25,7 @@ struct ContentView: View {
                 .font(.custom("SF Pro", size: 32))
             NumberTicker(number: currentNumber, decimalPlaces: 2, numberStyle: NumberFormatter.Style.currencyAccounting, font: .custom("Helvetica Neue", size: 32))
             Subtext()
+            PeriodPicker()
             Spacer()
             Stepper(value: $currentNumber, in: 0...1050000, step: 5.25) {
                 Text("\(currentNumber)")
@@ -79,6 +80,38 @@ struct Subtext: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+struct PeriodPicker: View {
+    let items = ["1W", "1M", "3M", "YTD", "1Y", "ALL"]
+    
+    var body: some View {
+        HStack {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 1) { // Spacing between items
+                    ForEach(items, id: \.self) { item in
+                        Button(action: {
+                            // Action for each item
+                            print("\(item) clicked!")
+                        }) {
+                            Text(item)
+                                .padding()
+                                .background(Color.white)
+                                .foregroundColor(.green)
+                                .cornerRadius(10)
+                                .font(.system(size: 14, weight: .bold, design: .default))
+                        }
+                        .frame(width: 65, height: 100) // Set the size of each button
+                    }
+                }
+                .padding() // Optional padding for the HStack
+            }
+            Image("settings")
+                .resizable()
+                .frame(width: 18, height: 18)
+                .padding(.init(top: 0, leading: 0, bottom: 0, trailing: 24))
+        }
     }
 }
 
