@@ -25,9 +25,10 @@ struct PageOne: View {
                 TopBanner()
                 Text("Investing")
                     .fontWeight(.medium)
-                    .padding(4)
+                    .padding(.init(top: 0, leading: 16, bottom: 0, trailing: 0))
                     .font(.custom("SFProDisplay-Medium", size: 32))
                 NumberTicker(number: currentNumber, decimalPlaces: 2, numberStyle: NumberFormatter.Style.currencyAccounting, font: .custom("SF Pro Display", size: 32))
+                    .padding(.init(top: 4, leading: 16, bottom: 0, trailing: 0))
                 Subtext()
                 GraphDemo()
                 PeriodPicker()
@@ -53,6 +54,13 @@ struct PageOne: View {
 }
 
 struct ContentView: View {
+    init() {
+        let appearance = UITabBarAppearance()
+                appearance.configureWithTransparentBackground()
+                appearance.backgroundColor = .white
+                appearance.shadowColor = .clear  // Remove any shadows
+                UITabBar.appearance().standardAppearance = appearance
+    }
     var body: some View {
         BottomNavBar()
     }
@@ -66,7 +74,7 @@ struct BottomNavBar: View {
             .tabItem {
                 Image(systemName: "house.fill")
             }
-            PageOne()
+            PageTwo()
             .tabItem {
                 Image(systemName: "magnifyingglass")
             }
@@ -83,11 +91,27 @@ struct BottomNavBar: View {
                 Image(systemName: "gearshape.fill")
             }
         }
-        .accentColor(.blue) // Change the accent color of selected tab items
+        .accentColor(.blue)
+        .background(Color.clear)
     }
 }
 
+struct PageTwo: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Image("crypto")
+                .resizable()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading) // Ensure it fills the screen horizontally
+        .padding(.init(top: 0, leading: 0, bottom: 80, trailing: 0))
+        .background(Color.black)  // Optional: Rounded corners for the VStack
+        .edgesIgnoringSafeArea(.all)
+        .statusBar(hidden: true)
+        // Align the VStack to the top-left
 
+    }
+    
+}
 
 struct TopBanner: View {
     var body: some View {
@@ -106,7 +130,7 @@ struct TopBanner: View {
 
 struct GraphDemo: View {
     var body: some View {
-        var valuesToPlot: [CGFloat] = [11,2,3,4,3,2,15,2,3,4,10,11,13,8,14,14,15,23,41,41,21,35,64,13,21,33,55,100]
+        var valuesToPlot: [CGFloat] = [11,2,3,4,3,2,15,2,3,4,10,11,13,8,14,14,15,23,41,41,21,35,64,13,21,33,55,100,104,301,205,100,45,180,205,210]
         var segments = [0,4,8]
         
         NumberTicker(number: 146051.71)
@@ -144,14 +168,14 @@ struct GraphDemo: View {
 struct BuyingPower: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Divider().frame(width: 340, height: 10)
+            Divider().frame(width: 370, height: 10)
         // Ensure it fills the screen horizontally
-        .padding(.init(top: 0, leading: 32, bottom: 0, trailing: 0))
+        .padding(.init(top: 0, leading: 24, bottom: 0, trailing: 0))
         // Align the VStack to the top-left
-            Spacer().frame(height: 16)
+            Spacer().frame(height: 18)
         HStack() {
             Text("Buying power")
-                .font(.system(size: 16, weight: .regular, design: .default)).padding(.init(top: 0, leading: 32, bottom: 0, trailing: 0))
+                .font(.system(size: 16, weight: .regular, design: .default)).padding(.init(top: 0, leading: 20, bottom: 0, trailing: 0))
             Spacer()
             Text("$41,478.60") .font(.system(size: 16, weight: .regular, design: .default))
             Image(systemName: "chevron.right")
@@ -160,7 +184,7 @@ struct BuyingPower: View {
                 .foregroundColor(Color.gray)
         }
             Spacer().frame(height: 24)
-            Rectangle().frame(width: 402, height: 8.0)
+            Rectangle().frame(width: 426, height: 8.0)
                 .foregroundColor(Color(red: 0.969, green: 0.969, blue: 0.969))
         }.padding(.init(top: -32, leading: 0, bottom: 0, trailing: 0))
     }
@@ -170,7 +194,7 @@ struct BuyingPower: View {
 struct Subtext: View {
     
     var body: some View {
-        Spacer().frame(height: 6)
+        Spacer().frame(height: 12)
         HStack() {
             Image("green")
                 .resizable()
@@ -185,7 +209,7 @@ struct Subtext: View {
                 .font(.custom("SF Pro", size: 14))
 
         }
-        .padding(4)
+        .padding(.init(top: -4, leading: 16, bottom: 0, trailing: 0))
     }
 }
 
@@ -216,12 +240,12 @@ struct PeriodPicker: View {
                         .frame(width: 65, height: 100) // Set the size of each button
                     }
                 }
-                .padding(.init(top: 0, leading: -12, bottom: 0, trailing: 0)) // Optional padding for the HStack
+                .padding(.init(top: 0, leading: 0, bottom: 0, trailing: 0)) // Optional padding for the HStack
             }
             Image("settings")
                 .resizable()
                 .frame(width: 18, height: 18)
-                .padding(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+                .padding(.init(top: 0, leading: 0, bottom: 0, trailing: 32))
         }
     }
 }
@@ -308,6 +332,7 @@ struct GraphDemoSmall: View {
 
 struct StocksList: View {
     let items = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"]
+    var pos = 0
 
     var body: some View {
         NavigationView {
@@ -323,10 +348,28 @@ struct StocksList: View {
                         .foregroundColor(Color.gray).frame(maxWidth: .infinity, alignment: .leading)
                     
                 }
-                List(items, id: \.self) { item in
+                List(Array(items.enumerated()), id: \.element) { index, item in
                     // Customize each cell here
-                    CustomCell(item: item)
-                        .padding(.init(top: 0, leading: -30, bottom: 0, trailing: 0))
+                    if(index == 0){
+                        CustomCell(item: "MSFT", name: "MSFT", shares: "72.7", ret: "+$411.34")
+                            .padding(.init(top: 0, leading: -30, bottom: 0, trailing: 0))
+                    }
+                    else if(index == 1){
+                        CustomCell(item: "PYPL", name: "PYPL", shares: "8.53327", ret: "+$59.99")
+                            .padding(.init(top: 0, leading: -30, bottom: 0, trailing: 0))
+                    }
+                    else if(index == 2){
+                        CustomCell(item: "AVGO", name: "AVGO", shares: "780", ret: "+$620.99")
+                            .padding(.init(top: 0, leading: -30, bottom: 0, trailing: 0))
+                    }
+                    else if(index == 3){
+                        CustomCell(item: "AAPL", name: "AAPL", shares: "142", ret: "+$920.99")
+                            .padding(.init(top: 0, leading: -30, bottom: 0, trailing: 0))
+                    }
+                    else if(index == 4){
+                        CustomCell(item: "TSLA", name: "TSLA", shares: "2", ret: "+$120.27")
+                            .padding(.init(top: 0, leading: -30, bottom: 0, trailing: 0))
+                    }
                 }
                 .navigationBarTitle("", displayMode: .inline)
                 .padding(.init(top: -14, leading: 0, bottom: 0, trailing: 0))// Works in iOS 13 and later
@@ -334,24 +377,41 @@ struct StocksList: View {
                 .padding(.init(top: 0, leading: 20, bottom: -0, trailing: 20))
                 .listRowInsets(EdgeInsets()) // Remove separators by removing row insets
                 .listStyle(PlainListStyle())
+                .disabled(true)
         }.padding(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
     }
 }
 
-
+func getStock(name: String, shares: String) -> any View {
+    var maxWidth = CGFloat(120)
+    return VStack {
+        Text(name)
+            .multilineTextAlignment(.leading)
+            .font(.system(size: 16, weight: .regular, design: .default)).frame(maxWidth: maxWidth, alignment: .leading)
+            .foregroundColor(Color.black)
+        Spacer().frame(height: 4)
+        Text(shares+" shares")
+            .font(.system(size: 12, weight: .regular, design: .default))
+            .frame(maxWidth: maxWidth, alignment: .leading)
+            .foregroundColor(Color.gray)
+    }
+}
 struct CustomCell: View {
     var item: String
+    var name: String
+    var shares: String
+    var ret: String
 
     var body: some View {
         var maxWidth = CGFloat(120)
         HStack {
             VStack {
-                Text("PYPL")
+                Text(name)
                     .multilineTextAlignment(.leading)
                     .font(.system(size: 16, weight: .regular, design: .default)).frame(maxWidth: maxWidth, alignment: .leading)
                     .foregroundColor(Color.black)
                 Spacer().frame(height: 4)
-                Text("0.853375 shares")
+                Text(shares+" shares")
                     .font(.system(size: 12, weight: .regular, design: .default))
                     .frame(maxWidth: maxWidth, alignment: .leading)
                     .foregroundColor(Color.gray)
@@ -361,7 +421,7 @@ struct CustomCell: View {
             Spacer()
             VStack {
                         // Green box with rounded corners
-                        Text("+$5.97")
+                Text(ret)
                     .font(.system(size: 14, weight: .light))  // Set the font size for the text
                             .foregroundColor(.black)  // Set the text color to black
                             .frame(width: 80, height: 31)  // Set the size of the box
