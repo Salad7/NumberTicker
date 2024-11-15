@@ -1,0 +1,16 @@
+PODS:
+  - RHLinePlot (0.1.0)
+
+DEPENDENCIES:
+  - RHLinePlot
+
+SPEC REPOS:
+  trunk:
+    - RHLinePlot
+
+SPEC CHECKSUMS:
+  RHLinePlot: ee1d4c933363f9efc37c1264bf46b7db6aca462a
+
+PODFILE CHECKSUM: b6ea22de87f75d928ba9de9ae7047967f2b312c8
+
+COCOAPODS: 1.16.2

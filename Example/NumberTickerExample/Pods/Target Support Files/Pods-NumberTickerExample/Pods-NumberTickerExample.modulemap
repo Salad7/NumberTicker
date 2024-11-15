@@ -1,0 +1,6 @@
+framework module Pods_NumberTickerExample {
+  umbrella header "Pods-NumberTickerExample-umbrella.h"
+
+  export *
+  module * { export * }
+}
